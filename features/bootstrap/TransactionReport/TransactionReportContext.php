@@ -11,6 +11,17 @@ class TransactionReportContext implements Context
      * @var Response
      */
     private $report;
+    /**
+     * @var TransactionStore
+     */
+    private $transactions;
+
+    /**
+     * @beforeScenario
+     */
+    public function setUp(){
+        $this->transactions = new TransactionStore();
+    }
 
     /**
      * @Then /^I should see a report with ([\d]*) lines$/
@@ -27,7 +38,7 @@ class TransactionReportContext implements Context
     {
         $start = new \DateTimeImmutable( $periodStartStr );
         $end = new \DateTimeImmutable( $periodEndStr );
-        $report = new \TransactionReport\TransactionReport();
+        $report = new \TransactionReport\TransactionReport( $this->transactions );
         $this->report = $report->execute( new Request( $start, $end ) );
     }
 
@@ -39,5 +50,21 @@ class TransactionReportContext implements Context
         if ( $expected != $actual ){
             throw new \Exception("Failed asserting that $expected == $actual .");
         }
+    }
+
+    /**
+     * @Given /^I should see "([^"]*)" with sum of "([^"]*)"$/
+     */
+    public function iShouldSeeWithSumOf($arg1, $arg2)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given /^I made a transaction on "([^"]*)" for "([^"]*)" from "([^"]*)"$/
+     */
+    public function iMadeATransactionOnForFrom($dateStr, $value, $name)
+    {
+        $this->transactions->addTransaction( $name, $value, new \DateTimeImmutable( $dateStr ) );
     }
 }
