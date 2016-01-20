@@ -1,0 +1,13 @@
+{
+    "name": "luos/behat-tutorial",
+    "description": "example behat",
+    "authors": [
+        {
+            "name": "Lajos Gerecs",
+            "email": "lajos.gerecs@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "behat/behat": "^3.0"
+    }
+}
