@@ -34,7 +34,7 @@ class Response
     }
 
     /**
-     * @return array
+     * @return Summary[]
      */
     public function getSummaries()
     {

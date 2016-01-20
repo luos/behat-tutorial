@@ -1,7 +1,6 @@
 <?php
 namespace TransactionReport;
 use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
 
 require_once __DIR__."/../../../src/TransactionReport/TransactionReport.php";
 
@@ -48,16 +47,22 @@ class TransactionReportContext implements Context
      */
     private function assertEquals( $expected, $actual , $message = '' ){
         if ( $expected != $actual ){
-            throw new \Exception("Failed asserting that $expected == $actual .");
+            throw new \Exception("$message \n Failed asserting that $expected == $actual .");
         }
     }
 
     /**
      * @Given /^I should see "([^"]*)" with sum of "([^"]*)"$/
      */
-    public function iShouldSeeWithSumOf($arg1, $arg2)
+    public function iShouldSeeWithSumOf($name, $expectedSum )
     {
-        throw new PendingException();
+        foreach( $this->report->getSummaries() as $summary ){
+            if ( $summary->getName() === $name ) {
+                $this->assertEquals( $expectedSum, $summary->getSum() );
+                return;
+            }
+        }
+        $this->assertEquals( true, false, "No entity named $name found on report" );
     }
 
     /**
