@@ -1,6 +1,7 @@
 <?php
 namespace TransactionReport;
 use Behat\Behat\Context\Context;
+use Behat\Gherkin\Node\TableNode;
 
 require_once __DIR__."/../../../src/TransactionReport/TransactionReport.php";
 
@@ -71,5 +72,28 @@ class TransactionReportContext implements Context
     public function iMadeATransactionOnForFrom($dateStr, $value, $name)
     {
         $this->transactions->addTransaction( $name, $value, new \DateTimeImmutable( $dateStr ) );
+    }
+
+
+    /**
+     * @Given /^I made a transactions:$/
+     */
+    public function iMadeATransactions(TableNode $table)
+    {
+        foreach( $table as $row ){
+            $this->iMadeATransactionOnForFrom( $row['date'], $row['amount'], $row['name']);
+        }
+    }
+
+    /**
+     * @Then /^The report should look like:$/
+     */
+    public function iReportShouldLookLike(TableNode $table)
+    {
+        foreach( $table as $row ){
+            $this->iShouldSeeWithSumOf( $row['name'], $row['sum']);
+        }
+
+        $this->assertEquals( count( $table->getIterator() ), count( $this->report->getSummaries() ) );
     }
 }
